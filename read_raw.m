@@ -186,8 +186,8 @@ coords.T_unit='seconds';
 if info.isLineScan
     img1 = cell(1,info.NumCh);
     for ii = 1:info.NumCh
-        img1{ii} = zeros(info.ImageWidth,Nl,typestr);
-        for jj = 1:Nl
+        img1{ii} = zeros(info.ImageWidth,typestr);
+        for jj = 1:1
             img1{ii}(:,jj) = img{ii}(myln_list(jj),:, ...
                 myfr_list(jj)-myfr_list(1)+1);
         end

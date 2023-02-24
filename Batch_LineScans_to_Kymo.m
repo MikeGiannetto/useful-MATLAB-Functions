@@ -4,6 +4,8 @@ function []= Batch_LineScans_to_Kymo(kymoLength,numChannels, linescan)
 % Nedergaard Lab
 % 08/29/2022
 %{
+Uses a folder directory from ThorLabs 2P where each image was saved as a
+.tif
 Takes a set of linescans, and makes them a single .tif image "kymograph"
 
                     >>>>>> INPUTS >>>>>>>
@@ -119,23 +121,29 @@ for ii = 2:numFrames
 end
 
 %Write stack to tif file (will save in current directory)
-capillary = uint16(capillary);
+capillary8 = uint8(capillary);
+
 if numChannels == 1
+    save([baseFileName '.mat'],'capillary','-append')
     for ii=1:numFrames
-    imwrite(capillary(:,:,ii),fullFileName,'writemode','append');
+    imwrite(capillary8(:,:,ii),fullFileName,'writemode','append');
     end
 elseif numChannels > 1 %runs if more than one channel is present
     channelSize = numFrames / numChannels;
     capChannelIndex = [1:channelSize;(1+channelSize):(channelSize*2);...
         (1 + channelSize*2):(channelSize*3);(1 + channelSize*3):(channelSize *4)];
     channelNames = {'Ch1' 'Ch2' 'Ch3' 'Ch4'};
+    video = cell(numChannels,1);
     for ii = 1:numChannels
         ind = capChannelIndex(ii,:);
         chFileName = [baseFileName channelNames{ii} '.tif'];
+        video{ii} = capillary(:,:,ind);
         for jj = 1:channelSize
-        imwrite(capillary(:,:,ind(jj)),chFileName,'writemode','append');
+        imwrite(capillary8(:,:,ind(jj)),chFileName,'writemode','append');
         end
     end
+    
+    save([baseFileName '.mat'],'video','-append')
 end
 
         
